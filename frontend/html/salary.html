@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Salary Payment Management</title>
+
+  <link rel="stylesheet" href="/frontend/css/base.css" />
+  <link rel="stylesheet" href="/frontend/css/salary.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">Hospital System</h2>
+
+    <nav id="sidebarNav">
+      <a href="/frontend/html/dashboard.html">Dashboard</a>
+      <a href="/frontend/html/patient.html">Patients</a>
+      <a href="/frontend/html/appointment.html">Appointments</a>
+      <a href="/frontend/html/treatment.html">Treatments</a>
+      <a href="/frontend/html/ward.html">Wards & Admission</a>
+      <a href="/frontend/html/billing.html">Billing</a>
+      <a href="/frontend/html/salary.html" class="active">Salary Payments</a>
+    </nav>
+
+    <button class="logout">Logout</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div>
+        <h1>Welcome, <span id="userName">—</span></h1>
+        <p id="userRole">— Dashboard</p>
+      </div>
+
+      <div class="user">
+        <span id="headerUserName">—</span>
+        <div class="avatar" id="userAvatar">?</div>
+      </div>
+    </header>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+      <h2>Salary Payment Management</h2>
+      <button class="primary-btn" id="toggleSalaryForm">
+        + Process Payment
+      </button>
+    </div>
+
+    <!-- STAFF CARDS -->
+    <div class="card-grid" id="staffCards">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- PROCESS SALARY FORM -->
+    <div class="card hidden" id="salaryForm">
+      <h3>Process Salary Payment</h3>
+
+      <div class="form-row">
+        <div>
+          <label>Staff Member</label>
+          <select id="staffSelect">
+            <option value="">Select Staff</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Payment Amount</label>
+          <input type="number" id="salaryAmount" value="0" />
+        </div>
+
+        <div>
+          <label>Payment Date</label>
+          <input type="date" id="paymentDate" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-btn" id="processSalaryBtn">
+          Process Payment
+        </button>
+        <button class="secondary-btn" id="cancelSalaryForm">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- PAYMENT HISTORY -->
+    <div class="card">
+      <h3>Payment History</h3>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>STAFF NAME</th>
+            <th>AMOUNT</th>
+            <th>PAYMENT DATE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="salaryTable">
+          <!-- Injected by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="/frontend/js/toast.js"></script>
+<script src="/frontend/js/nav.js"></script>
+<script src="/frontend/js/salary.js"></script>
+</body>
+</html>

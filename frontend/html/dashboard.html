@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hospital Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/frontend/css/base.css" />
+  <link rel="stylesheet" href="/frontend/css/dashboard.css" />
+</head>
+<body>
+
+  <!-- APP LAYOUT -->
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <h2 class="logo">Hospital System</h2>
+
+      <nav>
+        <a href="#" class="nav-link active">Dashboard</a>
+
+        <a href="/frontend/html/patient.html" data-role="admin,reception,nurse">Patients</a>
+        <a href="/frontend/html/appointment.html" data-role="admin,reception,doctor">Appointments</a>
+        <a href="/frontend/html/treatment.html" data-role="admin,doctor,nurse">Treatments</a>
+        <a href="/frontend/html/wards.html" data-role="admin,nurse">Wards & Admission</a>
+        <a href="/frontend/html/billing.html" data-role="admin,accounts">Billing</a>
+        <a href="/frontend/html/salary.html" data-role="admin,accounts">Salary Payments</a>
+
+        <a href="/frontend/html/profile.html" data-role="patient,reception">My Profile</a>
+        <a href="/frontend/html/my-appointment.html" data-role="patient,doctor">My Appointments</a>
+        <a href="/frontend/html/my-bills.html" data-role="patient">My Bills</a>
+      </nav>
+
+      <button class="logout">Logout</button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+      <header class="header">
+        <div>
+          <h1 id="welcomeText">Welcome</h1>
+          <p id="userRole">Dashboard</p>
+        </div>
+
+        <div class="user-box">
+          <span id="headerUserName"></span>
+          <div id="userAvatar" class="avatar"></div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD OVERVIEW -->
+      <section class="cards">
+        <div class="card" data-role="admin,reception">
+          <h3>Total Patients</h3>
+          <p id="totalPatients">0</p>
+        </div>
+
+        <div class="card" data-role="admin,doctor,reception">
+          <h3>Today's Appointments</h3>
+          <p id="todayAppointments">0</p>
+        </div>
+
+        <div class="card" data-role="admin,nurse">
+          <h3>Admitted Patients</h3>
+          <p id="admittedPatients">0</p>
+        </div>
+
+        <div class="card" data-role="admin,accounts,patient">
+          <h3>Pending Bills</h3>
+          <p id="pendingBills">0</p>
+        </div>
+
+        <div class="card" data-role="doctor">
+          <h3>Treatments Completed</h3>
+          <p id="treatmentsCompleted">0</p>
+        </div>
+
+        <div class="card" data-role="nurse">
+          <h3>Total Beds</h3>
+          <p id="totalBeds">0</p>
+        </div>
+      </section>
+
+      <!-- LIST SECTIONS -->
+      <section class="grid">
+        <div class="box" data-role="admin,reception">
+          <h3>Recent Patients</h3>
+          <ul id="recentPatients"></ul>
+        </div>
+
+        <div class="box" data-role="admin,doctor,reception,patient">
+          <h3>Upcoming Appointments</h3>
+          <ul id="upcomingAppointments"></ul>
+        </div>
+
+        <div class="box" data-role="doctor,patient">
+          <h3>Recent Treatments</h3>
+          <ul id="recentTreatments"></ul>
+        </div>
+
+        <div class="box" data-role="nurse,admin">
+          <h3>Ward Occupancy</h3>
+          <div id="wardOccupancy"></div>
+        </div>
+
+        <div class="box" data-role="accounts,admin">
+          <h3>Recent Bills</h3>
+          <ul id="recentBills"></ul>
+        </div>
+
+        <div class="box" data-role="accounts,admin">
+          <h3>Recent Salary Payments</h3>
+          <ul id="recentSalary"></ul>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script src="/frontend/js/toast.js"></script>
+  <script src="/frontend/js/nav.js"></script>
+  <script src="/frontend/js/dashbcoard.js"></script>
+</body>
+
+</html>

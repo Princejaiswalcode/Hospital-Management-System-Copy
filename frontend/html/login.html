@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="/frontend/css/login.css">
+    <script defer src="/frontend/js/auth.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="login-card">
+
+        <div class="icon">🏥</div>
+
+        <h2>Hospital Management</h2>
+        <p class="subtitle">Sign in to continue</p>
+
+        <!-- IMPORTANT: add id -->
+        <form id="loginForm">
+
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Enter your Username" required />
+
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required />
+
+            <label>Role</label>
+            <select id="role" required>
+                <option value="Patient">Patient</option>
+                <option value="Admin">Admin</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Nurse">Nurse</option>
+                <option value="Accounts">Accounts</option>
+                <option value="Reception">Reception</option>
+            </select>
+
+            <button type="submit">Login</button>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

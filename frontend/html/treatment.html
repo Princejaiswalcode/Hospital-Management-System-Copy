@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Treatment Management</title>
+
+  <link rel="stylesheet" href="/frontend/css/base.css" />
+  <link rel="stylesheet" href="/frontend/css/treatment.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">Hospital System</h2>
+
+    <nav id="sidebarNav">
+      <a href="/frontend/html/dashboard.html">Dashboard</a>
+      <a href="/frontend/html/patient.html">Patients</a>
+      <a href="/frontend/html/appointment.html">Appointments</a>
+      <a class="active" href="/frontend/html/treatment.html">Treatments</a>
+      <a href="#">Wards & Admission</a>
+      <a href="#">Billing</a>
+      <a href="#">Salary Payments</a>
+    </nav>
+
+    <button class="logout">Logout</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div>
+        <h1>Welcome, <span id="userName">—</span></h1>
+        <p id="userRole">Admin Dashboard</p>
+      </div>
+
+      <div class="user">
+        <span id="headerUserName">—</span>
+        <div class="avatar" id="userAvatar">?</div>
+      </div>
+    </header>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+      <h2>Treatment Management</h2>
+      <button class="primary-btn" id="addTreatmentBtn">+ Add Treatment</button>
+    </div>
+
+    <!-- ADD TREATMENT FORM -->
+    <div class="card hidden" id="treatmentFormCard">
+      <h3>Add Treatment Record</h3>
+
+      <div class="form-grid">
+        <div>
+          <label>Appointment</label>
+          <select id="appointmentSelect">
+            <option value="">Select Appointment</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label>Diagnosis</label>
+          <textarea id="diagnosis" placeholder="Enter diagnosis details..."></textarea>
+        </div>
+
+        <div class="full">
+          <label>Prescribed Medicines</label>
+          <textarea id="medicines" placeholder="Enter prescribed medicines..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-btn" id="saveTreatmentBtn">Save Treatment</button>
+        <button class="secondary-btn" id="cancelTreatmentBtn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>PATIENT ID</th>
+            <th>PATIENT NAME</th>
+            <th>DIAGNOSIS</th>
+            <th>MEDICINES</th>
+            <th>DATE</th>
+          </tr>
+        </thead>
+        <tbody id="treatmentTable">
+          <!-- Injected by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="/frontend/js/toast.js"></script>
+<script src="/frontend/js/nav.js"></script>
+<script src="/frontend/js/treatment.js"></script>
+</body>
+</html>

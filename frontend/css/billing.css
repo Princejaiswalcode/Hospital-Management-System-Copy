@@ -1,0 +1,31 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.total-box {
+  margin: 20px 0;
+  padding: 15px;
+  background: #eff6ff;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+}
+
+.badge.paid {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+a {
+  color: #2563eb;
+  font-weight: 500;
+}

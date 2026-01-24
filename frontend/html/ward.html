@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ward & Admission Management</title>
+
+  <link rel="stylesheet" href="/frontend/css/base.css" />
+  <link rel="stylesheet" href="/frontend/css/ward.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">Hospital System</h2>
+
+    <nav id="sidebarNav">
+      <a href="/frontend/html/dashboard.html">Dashboard</a>
+      <a href="/frontend/html/patient.html">Patients</a>
+      <a href="/frontend/html/appointment.html">Appointments</a>
+      <a href="/frontend/html/treatment.html">Treatments</a>
+      <a class="active" href="/frontend/html/ward.html">Wards & Admission</a>
+      <a href="/frontend/html/billing.html">Billing</a>
+      <a href="/frontend/html/salary.html">Salary Payments</a>
+    </nav>
+
+    <button class="logout">Logout</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div>
+        <h1>Welcome, <span id="userName">—</span></h1>
+        <p id="userRole">— Dashboard</p>
+      </div>
+
+      <div class="user">
+        <span id="headerUserName">—</span>
+        <div class="avatar" id="userAvatar">?</div>
+      </div>
+    </header>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+      <h2>Ward & Admission Management</h2>
+      <button id="toggleAdmitBtn" class="primary-btn admin-only">
+        + Admit Patient
+      </button>
+    </div>
+
+    <!-- WARD CARDS -->
+    <div class="ward-grid" id="wardGrid">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- ADMIT FORM -->
+    <div id="admitFormCard" class="card hidden admin-only">
+      <h3>Admit Patient</h3>
+
+      <div class="form-grid">
+        <div>
+          <label>Patient</label>
+          <select id="patientSelect">
+            <option value="">Select Patient</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Ward</label>
+          <select id="wardSelect">
+            <option value="">Select Ward</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Admission Date</label>
+          <input type="date" id="admissionDate" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button id="admitBtn" class="primary-btn">Admit Patient</button>
+        <button id="cancelAdmitBtn" class="secondary-btn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ACTIVE ADMISSIONS -->
+    <div class="card">
+      <h3>Active Admissions</h3>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>PATIENT ID</th>
+            <th>PATIENT NAME</th>
+            <th>WARD</th>
+            <th>ADMISSION DATE</th>
+            <th>DISCHARGE DATE</th>
+            <th>STATUS</th>
+            <th class="admin-only">ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="admissionTable">
+          <!-- Injected -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="/frontend/js/toast.js"></script>
+<script src="/frontend/js/nav.js"></script>
+<script src="/frontend/js/ward.js"></script>
+</body>
+</html>

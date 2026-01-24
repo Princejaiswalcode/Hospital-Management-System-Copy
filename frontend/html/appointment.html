@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Appointment Management</title>
+
+  <link rel="stylesheet" href="/frontend/css/base.css" />
+  <link rel="stylesheet" href="/frontend/css/appointment.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">Hospital System</h2>
+
+    <nav id="sidebarNav">
+      <a href="/frontend/html/dashboard.html">Dashboard</a>
+      <a href="/frontend/html/patient.html">Patients</a>
+      <a href="/frontend/html/appointment.html" class="active">Appointments</a>
+      <a href="/frontend/html/treatment.html">Treatments</a>
+      <a href="/frontend/html/ward.html">Wards & Admission</a>
+      <a href="/frontend/html/billing.html">Billing</a>
+      <a href="/frontend/html/salary.html">Salary Payments</a>
+    </nav>
+
+    <button class="logout">Logout</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div>
+        <h1>Welcome, <span id="userName">—</span></h1>
+        <p id="userRole">— Dashboard</p>
+      </div>
+
+      <div class="user">
+        <span id="headerUserName">—</span>
+        <div class="avatar" id="userAvatar">?</div>
+      </div>
+    </header>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+      <h2>Appointment Management</h2>
+      <button class="primary-btn" id="toggleForm">+ New Appointment</button>
+    </div>
+
+    <!-- ADD FORM -->
+    <div class="card form-card hidden" id="appointmentForm">
+      <h3>Schedule New Appointment</h3>
+
+      <div class="form-grid">
+        <div>
+          <label>Patient</label>
+          <select id="patientSelect">
+            <option>Select Patient</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Doctor</label>
+          <select id="doctorSelect">
+            <option>Select Doctor</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Date</label>
+          <input type="date" id="appointmentDate" />
+        </div>
+
+        <div>
+          <label>Time</label>
+          <input type="time" id="appointmentTime" />
+        </div>
+
+        <div>
+          <label>Appointment Type</label>
+          <select id="appointmentType">
+            <option>Consultation</option>
+            <option>Follow-up</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-btn" id="createAppointment">Create Appointment</button>
+        <button class="secondary-btn" id="cancelForm">Cancel</button>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>PATIENT ID</th>
+            <th>PATIENT</th>
+            <th>DOCTOR</th>
+            <th>DATE</th>
+            <th>TIME</th>
+            <th>TYPE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="appointmentsTable">
+          <!-- Injected by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="/frontend/js/toast.js"></script>
+<script src="/frontend/js/nav.js"></script>
+<script src="/frontend/js/appointment.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+.ward-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.ward-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.ward-card h4 {
+  margin: 0 0 10px;
+}
+
+.progress {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #2563eb;
+}
+
+.red {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.green {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.hidden {
+  display: none;
+}
+
+.badge.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 600;
+}

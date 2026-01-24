@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Billing Management</title>
+
+  <link rel="stylesheet" href="/frontend/css/base.css">
+  <link rel="stylesheet" href="/frontend/css/billing.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">Hospital System</h2>
+
+    <nav id="sidebarNav">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="patients.html">Patients</a>
+      <a href="appointment.html">Appointments</a>
+      <a href="treatment.html">Treatments</a>
+      <a href="ward.html">Wards & Admission</a>
+      <a href="billing.html" class="active">Billing</a>
+    </nav>
+
+    <button class="logout">Logout</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div>
+        <h1>Welcome, <span id="userName">—</span></h1>
+        <p id="userRole">— Dashboard</p>
+      </div>
+
+      <div class="user">
+        <span id="headerUserName">—</span>
+        <div class="avatar" id="userAvatar">?</div>
+      </div>
+    </header>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+      <h2>Billing Management</h2>
+      <button class="primary-btn" id="toggleBillForm">+ Generate Bill</button>
+    </div>
+
+    <!-- BILL FORM -->
+    <div class="card hidden" id="billFormCard">
+      <h3>Generate New Bill</h3>
+
+      <div class="form-grid">
+        <div>
+          <label>Patient</label>
+          <select id="patientSelect">
+            <option value="">Select Patient</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Consultation Charge</label>
+          <input type="number" id="consultationCharge" value="0">
+        </div>
+
+        <div>
+          <label>Medicine Charge</label>
+          <input type="number" id="medicineCharge" value="0">
+        </div>
+
+        <div>
+          <label>Room Charge</label>
+          <input type="number" id="roomCharge" value="0">
+        </div>
+      </div>
+
+      <div class="total-box">
+        Total Amount:
+        <span id="totalAmount">₹0.00</span>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-btn" id="generateBillBtn">Generate Bill</button>
+        <button class="secondary-btn" id="cancelBillBtn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- BILL TABLE -->
+    <div class="card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>PATIENT ID</th>
+            <th>PATIENT NAME</th>
+            <th>CONSULTATION</th>
+            <th>MEDICINE</th>
+            <th>ROOM</th>
+            <th>TOTAL</th>
+            <th>DATE</th>
+            <th>STATUS</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="billingTable"></tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="/frontend/js/toast.js"></script>
+<script src="/frontend/js/nav.js"></script>
+<script src="/frontend/js/billing.js"></script>
+</body>
+</html>
