@@ -1,29 +1,113 @@
-import db from '../db/index.js';
+import { db } from "../db/index.js";
 
-export const createPatient=async(first_name,last_name,age,gender,contact_number,address,status)=>{
-    const query=`INSERT INTO patients 
-    VALUES (?, ?, ?, ?, ?, ?, ?)`;
+/* =========================
+   GET ALL PATIENTS
+========================= */
+export const getAllPatients = async () => {
+  const [rows] = await db.execute(`
+    SELECT
+      patient_id,
+      first_name,
+      last_name,
+      gender,
+      date_of_birth,
+      TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age,
+      phone,
+      email
+    FROM patients
+    ORDER BY patient_id DESC
+  `);
+  return rows;
+};
 
-    const [rows]=await db.execute(query,[first_name,last_name,age,gender,contact_number,address,status]);
-    return rows;
-}
+/* =========================
+   GET PATIENT BY ID
+========================= */
+export const getPatientById = async (id) => {
+  const [[row]] = await db.execute(`
+    SELECT
+      patient_id,
+      first_name,
+      last_name,
+      gender,
+      date_of_birth,
+      TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age,
+      phone,
+      email
+    FROM patients
+    WHERE patient_id = ?
+  `, [id]);
 
-export const listPatient=async()=>{
-    const query=`SELECT * FROM patients`;
+  return row;
+};
 
-    const [rows]=await db.execute(query);
-    return rows;
-}
+/* =========================
+   GET PATIENT BY USER ID
+========================= */
+export const getPatientByUserId = async (user_id) => {
+  const [[row]] = await db.execute(`
+    SELECT
+      patient_id,
+      first_name,
+      last_name,
+      gender,
+      date_of_birth,
+      TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age,
+      phone,
+      email
+    FROM patients
+    WHERE user_id = ?
+  `, [user_id]);
 
-export const updatePatient=async(patient_id,first_name,last_name,contact_number,address,status)=>{
-    const query=`UPDATE patients 
-    SET first_name=?,
-    last_name=?,
-    contact_number=?,
-    address=?,
-    status=?
-    WHERE patient_id=?`;
+  return row;
+};
 
-    const [result]=await db.execute(query,[first_name,last_name,contact_number,address,status,patient_id]);
-    return result;
-}
+/* =========================
+   CREATE PATIENT
+========================= */
+export const createPatient = async (data) => {
+  const {
+    user_id,
+    first_name,
+    last_name,
+    gender,
+    date_of_birth,
+    phone,
+    email
+  } = data;
+
+  const [result] = await db.execute(
+    `INSERT INTO patients
+     (user_id, first_name, last_name, gender, date_of_birth, phone, email)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [user_id, first_name, last_name, gender, date_of_birth, phone, email]
+  );
+
+  return result.insertId;
+};
+
+/* =========================
+   UPDATE PATIENT
+========================= */
+export const updatePatient = async (id, data) => {
+  const {
+    first_name,
+    last_name,
+    gender,
+    date_of_birth,
+    phone,
+    email
+  } = data;
+
+  await db.execute(
+    `UPDATE patients
+     SET first_name = ?,
+         last_name = ?,
+         gender = ?,
+         date_of_birth = ?,
+         phone = ?,
+         email = ?
+     WHERE patient_id = ?`,
+    [first_name, last_name, gender, date_of_birth, phone, email, id]
+  );
+};

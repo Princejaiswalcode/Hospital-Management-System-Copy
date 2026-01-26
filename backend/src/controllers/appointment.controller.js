@@ -1,50 +1,49 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiResponse } from "../utils/ApiResponse";
-import { ApiError } from "../utils/ApiError";
-import {createAppointment, getTodaysAppointments, updateAppointmentStatus} from '../models/appointment.model';
 
-const createappointment=asyncHandler(async(req,res)=>{
-    const {patient_id,doctor_id,appointment_date,appointment_time,appointment_type,status}=req.body;
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import {
+  getAllAppointments,
+  getDoctorAppointments,
+  getPatientAppointments,
+  createAppointment,
+  updateAppointmentStatus
+} from "../models/appointment.model.js";
 
-    if(!patient_id)throw new ApiError(400, "patient_id is required");
-    if(!doctor_id)throw new ApiError(400,'doctor id is required');
-    if(!appointment_date)throw new ApiError(400, "appointment_date is required");
-    if(!appointment_time)throw new ApiError(400, "appointment_time is required");
-    if(!appointment_type)throw new ApiError(400, "appointment_type is required");
-    if(!status || !status.trim())throw new ApiError(400, "status is required");
+/* =========================
+   GET APPOINTMENTS (ROLE BASED)
+========================= */
+export const fetchAppointments = asyncHandler(async (req, res) => {
+  const { role, user_id } = req.user;
 
-    const appointment=await createAppointment(patient_id,doctor_id,appointment_date,appointment_time,appointment_type,status);
+  let data;
 
-    return res.status(200).json(
-        new ApiResponse(200,appointment,'appoitment created successfully')
-    )
-})
+  if (role === "doctor") {
+    data = await getDoctorAppointments(user_id);
+  } else if (role === "patient") {
+    data = await getPatientAppointments(user_id);
+  } else {
+    data = await getAllAppointments(); // admin / reception / nurse
+  }
 
-const todaysAppointments=asyncHandler(async(req,res)=>{
-    const date=new Date();
-    const monthName=date.getMonth()+1;
-    const appointments=await getTodaysAppointments(date,monthName);
+  res.json(new ApiResponse(200, data));
+});
 
-    return res.status(200).json(
-        new ApiResponse(200,appointments,'Apponitments fetched successfully')
-    )
-})
+/* =========================
+   CREATE APPOINTMENT
+========================= */
+export const addAppointment = asyncHandler(async (req, res) => {
+  const id = await createAppointment(req.body);
 
-const updateStatus=asyncHandler(async(req,res)=>{
-    const {appointment_id,status}=req.body
+  res.status(201).json(
+    new ApiResponse(201, { appointment_id: id }, "Appointment created")
+  );
+});
 
-    if(!appointment_id)throw new ApiError(400, "appointment id is required");
-    if(!status || !status.trim())throw new ApiError(400, "status is required");
-
-    const updatedAppointment=await updateAppointmentStatus(appointment_id,status);
-
-    return res.status(200).json(
-        new ApiResponse(200,updatedAppointment,'appointment updated successfully')
-    )
-})
-
-export {
-    createappointment,
-    todaysAppointments,
-    updateStatus
-}
+/* =========================
+   UPDATE STATUS
+========================= */
+export const changeAppointmentStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  await updateAppointmentStatus(req.params.id, status);
+  res.json(new ApiResponse(200, null, "Status updated"));
+});
