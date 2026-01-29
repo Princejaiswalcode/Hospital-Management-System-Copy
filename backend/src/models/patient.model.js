@@ -162,3 +162,12 @@ export const deletePatient = async (id) => {
     [id]
   );
 };
+
+
+export const getDoctorByUserId = async (user_id) => {
+  const [[row]] = await db.execute(
+    "SELECT doctor_id FROM doctors WHERE user_id = ?",
+    [user_id]
+  );
+  return row;
+};
