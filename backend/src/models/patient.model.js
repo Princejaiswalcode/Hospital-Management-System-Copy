@@ -13,7 +13,9 @@ export const getAllPatients = async () => {
       date_of_birth,
       TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age,
       phone,
-      email
+      email,
+      blood_group,
+      emergency_contact
     FROM patients
     ORDER BY patient_id DESC
   `);
@@ -24,7 +26,8 @@ export const getAllPatients = async () => {
    GET PATIENT BY ID
 ========================= */
 export const getPatientById = async (id) => {
-  const [[row]] = await db.execute(`
+  const [[row]] = await db.execute(
+    `
     SELECT
       patient_id,
       first_name,
@@ -33,11 +36,14 @@ export const getPatientById = async (id) => {
       date_of_birth,
       TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age,
       phone,
-      email
+      email,
+      blood_group,
+      emergency_contact
     FROM patients
     WHERE patient_id = ?
-  `, [id]);
-
+    `,
+    [id]
+  );
   return row;
 };
 
@@ -45,7 +51,8 @@ export const getPatientById = async (id) => {
    GET PATIENT BY USER ID
 ========================= */
 export const getPatientByUserId = async (user_id) => {
-  const [[row]] = await db.execute(`
+  const [[row]] = await db.execute(
+    `
     SELECT
       patient_id,
       first_name,
@@ -54,11 +61,14 @@ export const getPatientByUserId = async (user_id) => {
       date_of_birth,
       TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age,
       phone,
-      email
+      email,
+      blood_group,
+      emergency_contact
     FROM patients
     WHERE user_id = ?
-  `, [user_id]);
-
+    `,
+    [user_id]
+  );
   return row;
 };
 
@@ -73,14 +83,28 @@ export const createPatient = async (data) => {
     gender,
     date_of_birth,
     phone,
-    email
+    email,
+    blood_group,
+    emergency_contact
   } = data;
 
   const [result] = await db.execute(
-    `INSERT INTO patients
-     (user_id, first_name, last_name, gender, date_of_birth, phone, email)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [user_id, first_name, last_name, gender, date_of_birth, phone, email]
+    `
+    INSERT INTO patients
+    (user_id, first_name, last_name, gender, date_of_birth, phone, email, blood_group, emergency_contact)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+    [
+      user_id,
+      first_name,
+      last_name,
+      gender,
+      date_of_birth,
+      phone,
+      email,
+      blood_group,
+      emergency_contact
+    ]
   );
 
   return result.insertId;
@@ -96,18 +120,45 @@ export const updatePatient = async (id, data) => {
     gender,
     date_of_birth,
     phone,
-    email
+    email,
+    blood_group,
+    emergency_contact
   } = data;
 
   await db.execute(
-    `UPDATE patients
-     SET first_name = ?,
-         last_name = ?,
-         gender = ?,
-         date_of_birth = ?,
-         phone = ?,
-         email = ?
-     WHERE patient_id = ?`,
-    [first_name, last_name, gender, date_of_birth, phone, email, id]
+    `
+    UPDATE patients
+    SET
+      first_name = ?,
+      last_name = ?,
+      gender = ?,
+      date_of_birth = ?,
+      phone = ?,
+      email = ?,
+      blood_group = ?,
+      emergency_contact = ?
+    WHERE patient_id = ?
+    `,
+    [
+      first_name,
+      last_name,
+      gender,
+      date_of_birth,
+      phone,
+      email,
+      blood_group,
+      emergency_contact,
+      id
+    ]
+  );
+};
+
+/* =========================
+   DELETE PATIENT
+========================= */
+export const deletePatient = async (id) => {
+  await db.execute(
+    `DELETE FROM patients WHERE patient_id = ?`,
+    [id]
   );
 };

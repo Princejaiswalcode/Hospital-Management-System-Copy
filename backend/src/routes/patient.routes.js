@@ -1,18 +1,27 @@
 import { Router } from "express";
 import {
-  fetchPatients,
-  fetchPatient,
-  fetchMyProfile,
+  fetchAllPatients,
+  fetchPatientById,
+  fetchMyPatientProfile,
   addPatient,
-  editPatient
+  editPatient,
+  removePatient
 } from "../controllers/patient.controller.js";
 
 const router = Router();
 
-router.get("/", fetchPatients);           // Admin / Reception / Nurse
-router.get("/me", fetchMyProfile);         // Patient self
-router.get("/:id", fetchPatient);          // Admin / Reception
-router.post("/", addPatient);              // Admin / Reception
-router.put("/:id", editPatient);           // Admin
+/* =========================
+   ADMIN / RECEPTION
+========================= */
+router.get("/", fetchAllPatients);
+router.get("/:id", fetchPatientById);
+router.post("/", addPatient);
+router.put("/:id", editPatient);
+router.delete("/:id", removePatient);
+
+/* =========================
+   PATIENT SELF PROFILE
+========================= */
+router.get("/me/profile", fetchMyPatientProfile);
 
 export default router;

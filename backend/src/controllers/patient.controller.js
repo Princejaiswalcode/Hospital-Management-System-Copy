@@ -1,46 +1,48 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+
 import {
   getAllPatients,
   getPatientById,
   getPatientByUserId,
   createPatient,
-  updatePatient
+  updatePatient,
+  deletePatient
 } from "../models/patient.model.js";
 
 /* =========================
    GET ALL PATIENTS
 ========================= */
-export const fetchPatients = asyncHandler(async (req, res) => {
+export const fetchAllPatients = asyncHandler(async (req, res) => {
   const patients = await getAllPatients();
-  res.json(new ApiResponse(200, patients, "Patients fetched"));
+  res.status(200).json(new ApiResponse(200, patients));
 });
 
 /* =========================
    GET PATIENT BY ID
 ========================= */
-export const fetchPatient = asyncHandler(async (req, res) => {
+export const fetchPatientById = asyncHandler(async (req, res) => {
   const patient = await getPatientById(req.params.id);
 
   if (!patient) {
     throw new ApiError(404, "Patient not found");
   }
 
-  res.json(new ApiResponse(200, patient));
+  res.status(200).json(new ApiResponse(200, patient));
 });
 
 /* =========================
-   GET SELF (PATIENT)
+   GET LOGGED-IN PATIENT PROFILE
 ========================= */
-export const fetchMyProfile = asyncHandler(async (req, res) => {
+export const fetchMyPatientProfile = asyncHandler(async (req, res) => {
   const patient = await getPatientByUserId(req.user.user_id);
 
   if (!patient) {
     throw new ApiError(404, "Patient profile not found");
   }
 
-  res.json(new ApiResponse(200, patient));
+  res.status(200).json(new ApiResponse(200, patient));
 });
 
 /* =========================
@@ -48,9 +50,10 @@ export const fetchMyProfile = asyncHandler(async (req, res) => {
 ========================= */
 export const addPatient = asyncHandler(async (req, res) => {
   const patientId = await createPatient(req.body);
-  res.status(201).json(
-    new ApiResponse(201, { patient_id: patientId }, "Patient created")
-  );
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, { patient_id: patientId }, "Patient created"));
 });
 
 /* =========================
@@ -58,5 +61,13 @@ export const addPatient = asyncHandler(async (req, res) => {
 ========================= */
 export const editPatient = asyncHandler(async (req, res) => {
   await updatePatient(req.params.id, req.body);
-  res.json(new ApiResponse(200, null, "Patient updated"));
+  res.status(200).json(new ApiResponse(200, {}, "Patient updated"));
+});
+
+/* =========================
+   DELETE PATIENT
+========================= */
+export const removePatient = asyncHandler(async (req, res) => {
+  await deletePatient(req.params.id);
+  res.status(200).json(new ApiResponse(200, {}, "Patient deleted"));
 });
