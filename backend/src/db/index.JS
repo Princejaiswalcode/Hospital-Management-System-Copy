@@ -17,7 +17,7 @@ const connectDB = async () => {
     const connection = await db.getConnection();
     console.log("MySQL connected successfully");
     connection.release();
-  } catch (error) {
+  } catch (error){
     console.error("MySQL connection error:", error.message);
     process.exit(1);
   }

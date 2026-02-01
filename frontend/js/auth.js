@@ -1,45 +1,41 @@
-/* LOGIN HANDLER (used only on login.html) */
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("loginForm");
-  if (form) {
-    form.addEventListener("submit", login);
-  }
-});
-
-function login(e) {
+document.querySelector("form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const role = document.getElementById("role").value;
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  fetch("http://localhost:5000/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password, role })
-  })
-    .then(res => {
-      if (!res.ok) throw new Error();
-      return res.json();
-    })
-    .then(data => {
-      sessionStorage.setItem("user", JSON.stringify({
-        name: data.name,
-        role: data.role
-      }));
-      window.location.href = "/frontend/html/dashboard.html";
-    })
-    .catch(() => alert("Invalid credentials"));
-}
-
-/* ===== BASE AUTH HELPERS (USED EVERYWHERE) ===== */
-
-function getCurrentUser() {
-  return JSON.parse(sessionStorage.getItem("user"));
-}
-
-function requireAuth() {
-  if (!sessionStorage.getItem("user")) {
-    window.location.href = "/frontend/html/login.html";
+  if (!username || !password) {
+    showToast("error", "Username and password required");
+    return;
   }
-}
+
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast("error", data.message || "Invalid credentials");
+      return;
+    }
+
+    // Save token & user
+    sessionStorage.setItem("token", data.data.token);
+    sessionStorage.setItem("user", JSON.stringify(data.data.user));
+
+    showToast("success", "Login successful");
+
+    setTimeout(() => {
+      window.location.href = "/frontend/html/dashboard.html";
+    }, 800);
+
+  } catch (err) {
+    showToast("error", "Server error");
+  }
+});

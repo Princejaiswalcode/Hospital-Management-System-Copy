@@ -1,17 +1,54 @@
-import {db} from '../db/index.js';
+import { db } from "../db/index.js";
 
-export const findUserByUsername=async(username)=>{
-    const query=`SELECT user_id, username, password, role, full_name
-    FROM users
-    WHERE username=?`;
-    const [rows]=await db.execute(query,[username]);
-    return rows;
+/* =========================
+   SALARY QUERIES
+========================= */
+
+export const getAllSalaryPayments = async () => {
+  const [rows] = await db.execute(`
+    SELECT *
+    FROM salary_payment
+    ORDER BY payment_date DESC
+  `);
+  return rows;
 };
 
-export const findUserByUserId=async(user_id)=>{
-    const query=`SELECT user_id, username, password, role, full_name
-    FROM users
-    WHERE user_id=?`;
-    const [rows]=await db.execute(query,[user_id]);
-    return rows;
+export const getSalaryByEmployee = async (employee_id) => {
+  const [rows] = await db.execute(
+    `SELECT *
+     FROM salary_payment
+     WHERE employee_id = ?
+     ORDER BY payment_date DESC`,
+    [employee_id]
+  );
+  return rows;
+};
+
+export const createSalaryPayment = async (data) => {
+  const {
+    employee_id,
+    employee_type,
+    amount,
+    payment_date,
+    payment_month,
+    payment_year,
+    payment_method
+  } = data;
+
+  const [result] = await db.execute(
+    `INSERT INTO salary_payment
+     (employee_id, employee_type, amount, payment_date, payment_month, payment_year, payment_method)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      employee_id,
+      employee_type,
+      amount,
+      payment_date,
+      payment_month,
+      payment_year,
+      payment_method
+    ]
+  );
+
+  return result.insertId;
 };

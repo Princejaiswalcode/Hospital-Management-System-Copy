@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
+  const token = sessionStorage.getItem("token");
 
-  if (!user) {
+  if (!user || !token) {
     window.location.href = "/frontend/html/login.html";
     return;
   }
 
   applyUserInfo(user);
   applyRoleAccess(user.role);
-  loadDashboardData(user);
+  loadDashboardFromAPI(token);
   setupLogout();
 });
 
@@ -16,15 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
    USER INFO
 ================================ */
 function applyUserInfo(user) {
-  document.getElementById("welcomeText").innerText = `Welcome, ${user.name}`;
-  document.getElementById("headerUserName").innerText = user.name;
-  document.getElementById("userRole").innerText = `${capitalize(user.role)} Dashboard`;
+  document.getElementById("welcomeText").innerText = `Welcome, ${user.full_name}`;
+  document.getElementById("headerUserName").innerText = user.full_name;
+  document.getElementById("userRole").innerText =
+    `${capitalize(user.role)} Dashboard`;
   document.getElementById("userAvatar").innerText =
-    user.name.charAt(0).toUpperCase();
+    user.full_name.charAt(0).toUpperCase();
 }
 
 /* ===============================
-   ROLE BASED ACCESS
+   ROLE ACCESS
 ================================ */
 function applyRoleAccess(role) {
   document.querySelectorAll("[data-role]").forEach(el => {
@@ -36,141 +38,37 @@ function applyRoleAccess(role) {
 }
 
 /* ===============================
-   DASHBOARD DATA (MOCK + API READY)
+   LOAD DASHBOARD (REAL API)
 ================================ */
-function loadDashboardData(user) {
-  switch (user.role) {
-    case "admin":
-      loadAdminDashboard();
-      break;
-    case "doctor":
-      loadDoctorDashboard();
-      break;
-    case "nurse":
-      loadNurseDashboard();
-      break;
-    case "reception":
-      loadReceptionDashboard();
-      break;
-    case "accounts":
-      loadAccountsDashboard();
-      break;
-    case "patient":
-      loadPatientDashboard(user);
-      break;
+async function loadDashboardFromAPI(token) {
+  try {
+    const res = await fetch("http://localhost:5000/api/dashboard", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message);
+
+    const data = json.data;
+    renderDashboard(data);
+
+  } catch (err) {
+    showToast("error", err.message || "Dashboard load failed");
   }
 }
 
 /* ===============================
-   ADMIN
+   RENDER DATA
 ================================ */
-function loadAdminDashboard() {
-  setText("totalPatients", 15);
-  setText("todayAppointments", 2);
-  setText("admittedPatients", 5);
-  setText("pendingBills", 0);
-
-  fillList("recentPatients", [
-    "Rajesh Kumar – Admitted",
-    "Priya Sharma – Observation",
-    "Suresh Patel – Admitted"
-  ]);
-
-  fillList("upcomingAppointments", [
-    "Rajesh Kumar – 10:00",
-    "Priya Sharma – 11:00"
-  ]);
-}
-
-/* ===============================
-   DOCTOR
-================================ */
-function loadDoctorDashboard() {
-  setText("todayAppointments", 2);
-  setText("totalPatients", 3);
-  setText("treatmentsCompleted", 1);
-
-  fillList("upcomingAppointments", [
-    "Rajesh Kumar – 10:00",
-    "Priya Sharma – 11:00"
-  ]);
-
-  fillList("recentTreatments", [
-    "Suresh Patel – Hypertension"
-  ]);
-}
-
-/* ===============================
-   NURSE
-================================ */
-function loadNurseDashboard() {
-  setText("admittedPatients", 5);
-  setText("totalBeds", 65);
-
-  fillList("recentPatients", [
-    "Rajesh Kumar",
-    "Suresh Patel",
-    "Vikram Singh"
-  ]);
-
-  const ward = document.getElementById("wardOccupancy");
-  ward.innerHTML = `
-    <div>General Ward A - 15/20</div>
-    <div>General Ward B - 18/20</div>
-    <div>ICU - 7/10</div>
-    <div>Private Rooms - 10/15</div>
-  `;
-}
-
-/* ===============================
-   RECEPTION
-================================ */
-function loadReceptionDashboard() {
-  setText("totalPatients", 15);
-  setText("todayAppointments", 2);
-
-  fillList("upcomingAppointments", [
-    "Rajesh Kumar – 10:00",
-    "Priya Sharma – 11:00"
-  ]);
-
-  fillList("recentPatients", [
-    "Rajesh Kumar",
-    "Priya Sharma",
-    "Ananya Reddy"
-  ]);
-}
-
-/* ===============================
-   ACCOUNTS
-================================ */
-function loadAccountsDashboard() {
-  setText("pendingBills", 0);
-
-  fillList("recentBills", [
-    "Ananya Reddy – ₹1700 (Paid)"
-  ]);
-
-  fillList("recentSalary", [
-    "Dr. Arun Mehta – ₹80,000",
-    "Nurse Kavita Singh – ₹35,000"
-  ]);
-}
-
-/* ===============================
-   PATIENT
-================================ */
-function loadPatientDashboard(user) {
-  setText("todayAppointments", 1);
-  setText("pendingBills", 0);
-
-  fillList("upcomingAppointments", [
-    "Dr. Arun Mehta – 10:00"
-  ]);
-
-  fillList("recentTreatments", [
-    "No treatment records"
-  ]);
+function renderDashboard(data) {
+  setText("totalPatients", data.totalPatients);
+  setText("todayAppointments", data.todaysAppointments || data.myAppointments);
+  setText("admittedPatients", data.admittedPatients);
+  setText("pendingBills", data.pendingBills);
+  setText("treatmentsCompleted", data.treatmentsCompleted);
+  setText("totalBeds", data.totalBeds);
 }
 
 /* ===============================
@@ -178,19 +76,9 @@ function loadPatientDashboard(user) {
 ================================ */
 function setText(id, value) {
   const el = document.getElementById(id);
-  if (el) el.innerText = value;
-}
-
-function fillList(id, items) {
-  const ul = document.getElementById(id);
-  if (!ul) return;
-
-  ul.innerHTML = "";
-  items.forEach(item => {
-    const li = document.createElement("li");
-    li.innerText = item;
-    ul.appendChild(li);
-  });
+  if (el && value !== undefined) {
+    el.innerText = value;
+  }
 }
 
 function capitalize(text) {
