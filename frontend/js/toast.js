@@ -1,4 +1,4 @@
-function showToast(type, message){
+function showToast(type, message) {
   Swal.fire({
     toast: true,
     position: "top-end",

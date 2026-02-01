@@ -1,39 +1,36 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import {
-  createTreatment,
-  getTreatmentsByPatient
-} from "../models/treatment.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
-/* =========================
-   CREATE TREATMENT (Doctor only)
-========================= */
+import { createTreatment } from "../models/treatment.model.js";
+import { getDoctorByUserId } from "../models/doctor.model.js";
+
 export const addTreatment = asyncHandler(async (req, res) => {
-  if (req.user.role !== "doctor") {
+  // 🔐 JWT info
+  const { user_id, role } = req.user;
+
+  if (role !== "doctor") {
     throw new ApiError(403, "Only doctors can add treatments");
   }
 
-  const doctor_id = req.user.user_id; // 🔥 FIX HERE
-  const {
-    patient_id,
-    diagnosis,
-    prescription,
-    treatment_cost,
-    follow_up_date
-  } = req.body;
+  // 🔍 Find doctor_id from user_id
+  const doctor = await getDoctorByUserId(user_id);
+  if (!doctor) {
+    throw new ApiError(404, "Doctor profile not found");
+  }
 
-  if (!patient_id || !diagnosis) {
-    throw new ApiError(400, "Patient ID and diagnosis required");
+  const { appointment_id, patient_id, diagnosis, medicines } = req.body;
+
+  if (!appointment_id || !patient_id || !diagnosis) {
+    throw new ApiError(400, "Required fields missing");
   }
 
   const treatmentId = await createTreatment({
+    appointment_id,
     patient_id,
-    doctor_id,
+    doctor_id: doctor.doctor_id, // ✅ FIX
     diagnosis,
-    prescription,
-    treatment_cost,
-    follow_up_date
+    medicines
   });
 
   res.status(201).json(
@@ -44,6 +41,7 @@ export const addTreatment = asyncHandler(async (req, res) => {
     )
   );
 });
+
 
 /* =========================
    PATIENT VIEW TREATMENTS

@@ -64,12 +64,14 @@ async function loadDashboardFromAPI(token) {
 ================================ */
 function renderDashboard(data) {
   setText("totalPatients", data.totalPatients);
-  setText("todayAppointments", data.todaysAppointments || data.myAppointments);
+  setText("todayAppointments", data.todayAppointments);
   setText("admittedPatients", data.admittedPatients);
   setText("pendingBills", data.pendingBills);
   setText("treatmentsCompleted", data.treatmentsCompleted);
   setText("totalBeds", data.totalBeds);
+  setText("todayAppointments", data.upcomingAppointments);
 }
+
 
 /* ===============================
    HELPERS

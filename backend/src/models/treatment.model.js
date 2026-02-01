@@ -1,28 +1,17 @@
 import { db } from "../db/index.js";
 
-/* =========================
-   CREATE TREATMENT
-========================= */
 export const createTreatment = async ({
+  appointment_id,
   patient_id,
   doctor_id,
   diagnosis,
-  prescription,
-  treatment_cost,
-  follow_up_date
+  medicines
 }) => {
   const [result] = await db.execute(
     `INSERT INTO treatments
-     (patient_id, doctor_id, treatment_date, diagnosis, prescription, treatment_cost, follow_up_date)
-     VALUES (?, ?, CURDATE(), ?, ?, ?, ?)`,
-    [
-      patient_id,
-      doctor_id,
-      diagnosis,
-      prescription,
-      treatment_cost,
-      follow_up_date
-    ]
+     (appointment_id, patient_id, doctor_id, diagnosis, medicines)
+     VALUES (?, ?, ?, ?, ?)`,
+    [appointment_id, patient_id, doctor_id, diagnosis, medicines]
   );
 
   return result.insertId;
