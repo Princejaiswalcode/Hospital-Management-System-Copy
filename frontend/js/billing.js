@@ -6,63 +6,90 @@ document.addEventListener("DOMContentLoaded", () => {
   setupLogout();
 });
 
-/* ROLE CHECK */
+/* =========================
+   ROLE CHECK
+========================= */
 function checkRoleAccess() {
   const user = JSON.parse(sessionStorage.getItem("user"));
-  if (!user || !["Admin", "Accounts"].includes(user.role)) {
+
+  if (!user || !["admin", "accounts"].includes(user.role)) {
     showToast("error", "Access denied");
-    window.location.href = "dashboard.html";
+    window.location.href = "/frontend/html/dashboard.html";
   }
 }
 
-/* USER INFO */
+/* =========================
+   USER INFO
+========================= */
 function loadUserInfo() {
   const user = JSON.parse(sessionStorage.getItem("user"));
 
-  userName.innerText = user.name;
-  headerUserName.innerText = user.name;
-  userRole.innerText = user.role + " Dashboard";
-  userAvatar.innerText = user.name.charAt(0).toUpperCase();
+  document.getElementById("userName").innerText = user.full_name;
+  document.getElementById("headerUserName").innerText = user.full_name;
+  document.getElementById("userRole").innerText =
+    `${user.role.toUpperCase()} Dashboard`;
+  document.getElementById("userAvatar").innerText =
+    user.full_name.charAt(0).toUpperCase();
 }
 
-/* FORM TOGGLE + TOTAL CALC */
+/* =========================
+   FORM ACTIONS
+========================= */
 function setupFormActions() {
-  const form = document.getElementById("billFormCard");
+  const formCard = document.getElementById("billFormCard");
+  const toggleBtn = document.getElementById("toggleBillForm");
+  const cancelBtn = document.getElementById("cancelBillBtn");
+  const generateBtn = document.getElementById("generateBillBtn");
 
-  toggleBillForm.onclick = () => {
-    form.classList.toggle("hidden");
+  const consultation = document.getElementById("consultationCharge");
+  const medicine = document.getElementById("medicineCharge");
+  const room = document.getElementById("roomCharge");
+
+  toggleBtn.onclick = () => {
+    formCard.classList.toggle("hidden");
   };
 
-  cancelBillBtn.onclick = () => {
-    form.classList.add("hidden");
+  cancelBtn.onclick = () => {
+    formCard.classList.add("hidden");
   };
 
-  [consultationCharge, medicineCharge, roomCharge].forEach(i =>
-    i.addEventListener("input", updateTotal)
+  [consultation, medicine, room].forEach(input =>
+    input.addEventListener("input", updateTotal)
   );
 
-  generateBillBtn.onclick = createBill;
+  generateBtn.onclick = createBill;
 }
 
+/* =========================
+   TOTAL CALC
+========================= */
 function updateTotal() {
-  const total =
-    Number(consultationCharge.value) +
-    Number(medicineCharge.value) +
-    Number(roomCharge.value);
+  const consultation = Number(document.getElementById("consultationCharge").value);
+  const medicine = Number(document.getElementById("medicineCharge").value);
+  const room = Number(document.getElementById("roomCharge").value);
 
-  totalAmount.innerText = `₹${total.toFixed(2)}`;
+  const total = consultation + medicine + room;
+  document.getElementById("totalAmount").innerText = `₹${total.toFixed(2)}`;
 }
 
-/* LOAD BILLS */
+/* =========================
+   LOAD BILLS
+========================= */
 function loadBills() {
-  fetch("http://localhost:5000/api/billing")
+  const token = sessionStorage.getItem("token");
+
+  fetch("http://localhost:5000/api/billing", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .then(res => res.json())
     .then(data => {
-      billingTable.innerHTML = "";
+      const table = document.getElementById("billingTable");
+      table.innerHTML = "";
 
       data.forEach(b => {
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
           <td>#${b.patient_id}</td>
           <td><strong>${b.patient_name}</strong></td>
@@ -82,38 +109,53 @@ function loadBills() {
             }
           </td>
         `;
-        billingTable.appendChild(tr);
+        table.appendChild(tr);
       });
-    });
+    })
+    .catch(() => showToast("error", "Failed to load bills"));
 }
 
-/* CREATE BILL */
+/* =========================
+   CREATE BILL
+========================= */
 function createBill() {
+  const token = sessionStorage.getItem("token");
+
   const payload = {
-    patient_id: patientSelect.value,
-    consultation: consultationCharge.value,
-    medicine: medicineCharge.value,
-    room: roomCharge.value
+    patient_id: document.getElementById("patientSelect").value,
+    consultation: document.getElementById("consultationCharge").value,
+    medicine: document.getElementById("medicineCharge").value,
+    room: document.getElementById("roomCharge").value
   };
 
   fetch("http://localhost:5000/api/billing", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
     body: JSON.stringify(payload)
   })
     .then(res => {
       if (!res.ok) throw new Error();
       showToast("success", "Bill generated");
-      billFormCard.classList.add("hidden");
+      document.getElementById("billFormCard").classList.add("hidden");
       loadBills();
     })
     .catch(() => showToast("error", "Failed to generate bill"));
 }
 
-/* MARK PAID */
+/* =========================
+   MARK PAID
+========================= */
 function markPaid(id) {
+  const token = sessionStorage.getItem("token");
+
   fetch(`http://localhost:5000/api/billing/${id}/pay`, {
-    method: "PUT"
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
     .then(() => {
       showToast("success", "Payment updated");
@@ -121,10 +163,12 @@ function markPaid(id) {
     });
 }
 
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 function setupLogout() {
   document.querySelector(".logout").onclick = () => {
     sessionStorage.clear();
-    window.location.href = "login.html";
+    window.location.href = "/frontend/html/login.html";
   };
 }

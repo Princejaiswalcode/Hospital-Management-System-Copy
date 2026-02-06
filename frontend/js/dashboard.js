@@ -17,12 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
    USER INFO
 ================================ */
 function applyUserInfo(user) {
-  document.getElementById("welcomeText").innerText = `Welcome, ${user.full_name}`;
-  document.getElementById("headerUserName").innerText = user.full_name;
+  const name = user.full_name || "User";
+
+  document.getElementById("welcomeText").innerText = `Welcome, ${name}`;
+  document.getElementById("headerUserName").innerText = name;
   document.getElementById("userRole").innerText =
     `${capitalize(user.role)} Dashboard`;
   document.getElementById("userAvatar").innerText =
-    user.full_name.charAt(0).toUpperCase();
+    name.charAt(0).toUpperCase();
 }
 
 /* ===============================
@@ -38,7 +40,7 @@ function applyRoleAccess(role) {
 }
 
 /* ===============================
-   LOAD DASHBOARD (REAL API)
+   LOAD DASHBOARD
 ================================ */
 async function loadDashboardFromAPI(token) {
   try {
@@ -51,8 +53,8 @@ async function loadDashboardFromAPI(token) {
     const json = await res.json();
     if (!res.ok) throw new Error(json.message);
 
-    const data = json.data;
-    renderDashboard(data);
+    console.log("Dashboard API Response:", json.data);
+    renderDashboard(json.data);
 
   } catch (err) {
     showToast("error", err.message || "Dashboard load failed");
@@ -60,30 +62,91 @@ async function loadDashboardFromAPI(token) {
 }
 
 /* ===============================
-   RENDER DATA
+   RENDER DASHBOARD
 ================================ */
 function renderDashboard(data) {
+  /* ===== COUNTS (DIRECT FROM API) ===== */
   setText("totalPatients", data.totalPatients);
   setText("todayAppointments", data.todayAppointments);
   setText("admittedPatients", data.admittedPatients);
   setText("pendingBills", data.pendingBills);
   setText("treatmentsCompleted", data.treatmentsCompleted);
   setText("totalBeds", data.totalBeds);
-  setText("todayAppointments", data.upcomingAppointments);
+
+  /* ===== LISTS ===== */
+  if (data.lists) {
+    renderRecentPatients(data.lists.recentPatients);
+    renderUpcomingAppointments(data.lists.upcomingAppointments);
+    renderWardOccupancy(data.lists.wardOccupancy);
+    renderRecentBills(data.lists.recentBills);
+  }
 }
 
+/* ===============================
+   LIST RENDERERS
+================================ */
+function renderRecentPatients(list = []) {
+  const ul = document.getElementById("recentPatients");
+  if (!ul) return;
+
+  ul.innerHTML = "";
+  list.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `${p.first_name} ${p.last_name}`;
+    ul.appendChild(li);
+  });
+}
+
+function renderUpcomingAppointments(list = []) {
+  const ul = document.getElementById("upcomingAppointments");
+  if (!ul) return;
+
+  ul.innerHTML = "";
+  list.forEach(a => {
+    const li = document.createElement("li");
+    li.textContent =
+      `${a.first_name} ${a.last_name} – ${a.appointment_date} ${a.appointment_time}`;
+    ul.appendChild(li);
+  });
+}
+
+function renderWardOccupancy(list = []) {
+  const div = document.getElementById("wardOccupancy");
+  if (!div) return;
+
+  div.innerHTML = "";
+  list.forEach(w => {
+    const p = document.createElement("p");
+    p.textContent =
+      `${w.ward_name}: ${w.available_beds}/${w.total_beds} beds available`;
+    div.appendChild(p);
+  });
+}
+
+function renderRecentBills(list = []) {
+  const ul = document.getElementById("recentBills");
+  if (!ul) return;
+
+  ul.innerHTML = "";
+  list.forEach(b => {
+    const li = document.createElement("li");
+    li.textContent =
+      `${b.first_name} ${b.last_name} – ₹${b.total_amount} (${b.payment_status})`;
+    ul.appendChild(li);
+  });
+}
 
 /* ===============================
    HELPERS
 ================================ */
 function setText(id, value) {
   const el = document.getElementById(id);
-  if (el && value !== undefined) {
+  if (el && value !== undefined && value !== null) {
     el.innerText = value;
   }
 }
 
-function capitalize(text) {
+function capitalize(text = "") {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
@@ -91,8 +154,11 @@ function capitalize(text) {
    LOGOUT
 ================================ */
 function setupLogout() {
-  document.querySelector(".logout").onclick = () => {
-    sessionStorage.clear();
-    window.location.href = "/frontend/html/login.html";
-  };
+  const btn = document.querySelector(".logout");
+  if (btn) {
+    btn.onclick = () => {
+      sessionStorage.clear();
+      window.location.href = "/frontend/html/login.html";
+    };
+  }
 }

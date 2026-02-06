@@ -145,3 +145,17 @@ input, select {
 input:focus, select:focus {
   border-color: #2563eb;
 }
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+.billing-form {
+  display: none;
+}
+
+.billing-form.show {
+  display: block;
+}

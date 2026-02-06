@@ -20,14 +20,20 @@
     <h2 class="logo">Hospital System</h2>
 
     <nav id="sidebarNav">
-      <a href="/frontend/html/dashboard.html">Dashboard</a>
-      <a href="/frontend/html/patient.html" class="active">Patients</a>
-      <a href="/frontend/html/appointment.html">Appointments</a>
-      <a href="/frontend/html/treatment.html">Treatments</a>
-      <a href="/frontend/html/ward.html">Wards & Admission</a>
-      <a href="/frontend/html/billing.html">Billing</a>
-      <a href="/frontend/html/account.html">Salary Payments</a>
-    </nav>
+    <a data-page="dashboard" class="nav-link active">Dashboard</a>
+
+    <a data-page="patients" data-role="admin,reception,nurse">Patients</a>
+    <a data-page="appointments" data-role="admin,reception,doctor">Appointments</a>
+    <a data-page="treatments" data-role="admin,doctor,nurse">Treatments</a>
+    <a data-page="wards" data-role="admin,nurse">Wards & Admission</a>
+    <a data-page="billing" data-role="admin,accounts">Billing</a>
+    <a data-page="salary" data-role="admin,accounts">Salary Payments</a>
+
+    <a data-page="profile" data-role="patient,reception">My Profile</a>
+    <a data-page="myAppointments" data-role="patient,doctor">My Appointments</a>
+    <a data-page="myBills" data-role="patient">My Bills</a>
+  </nav>
+
 
     <button class="logout">Logout</button>
   </aside>
@@ -137,7 +143,7 @@
 
 <!-- GLOBAL JS -->
 <script src="/frontend/js/toast.js"></script>
-<script src="/frontend/js/nav.js"></script>
+<script src="/frontend/js/layout.js"></script>
 <script src="/frontend/js/auth.js"></script>
 
 <!-- PAGE JS -->
