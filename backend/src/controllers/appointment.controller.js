@@ -12,36 +12,53 @@ import {
 
 /* =========================
    GET ALL APPOINTMENTS
-   Admin / Reception / Nurse
 ========================= */
 export const getAllAppointmentsController = asyncHandler(async (req, res) => {
   const data = await getAllAppointments();
-  res.json(new ApiResponse(200, data, "Appointments fetched"));
+  res.status(200).json(data);
 });
 
 /* =========================
    DOCTOR APPOINTMENTS
 ========================= */
 export const getDoctorAppointmentsController = asyncHandler(async (req, res) => {
-  const { user_id } = req.user;
-  const data = await getDoctorAppointments(user_id);
-  res.json(new ApiResponse(200, data, "Doctor appointments fetched"));
+  if (!req.user?.doctor_id) {
+    throw new ApiError(403, "Doctor access only");
+  }
+
+  const data = await getDoctorAppointments(req.user.doctor_id);
+  res.status(200).json(data);
 });
 
 /* =========================
    PATIENT APPOINTMENTS
 ========================= */
 export const getPatientAppointmentsController = asyncHandler(async (req, res) => {
-  const { user_id } = req.user;
-  const data = await getPatientAppointments(user_id);
-  res.json(new ApiResponse(200, data, "Patient appointments fetched"));
+  if (!req.user?.patient_id) {
+    throw new ApiError(403, "Patient access only");
+  }
+
+  const data = await getPatientAppointments(req.user.patient_id);
+  res.status(200).json(data);
 });
 
 /* =========================
    CREATE APPOINTMENT
 ========================= */
 export const createAppointmentController = asyncHandler(async (req, res) => {
+  const {
+    patient_id,
+    doctor_id,
+    appointment_date,
+    appointment_time
+  } = req.body;
+
+  if (!patient_id || !doctor_id || !appointment_date || !appointment_time) {
+    throw new ApiError(400, "Missing required fields");
+  }
+
   const id = await createAppointment(req.body);
+
   res.status(201).json(
     new ApiResponse(201, { appointment_id: id }, "Appointment created")
   );
@@ -51,13 +68,12 @@ export const createAppointmentController = asyncHandler(async (req, res) => {
    UPDATE STATUS
 ========================= */
 export const updateAppointmentStatusController = asyncHandler(async (req, res) => {
-  const { id } = req.params;
   const { status } = req.body;
 
   if (!status) {
     throw new ApiError(400, "Status is required");
   }
 
-  await updateAppointmentStatus(id, status);
+  await updateAppointmentStatus(req.params.id, status);
   res.json(new ApiResponse(200, null, "Status updated"));
 });

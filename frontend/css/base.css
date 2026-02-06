@@ -70,7 +70,9 @@ body {
   background: #2563eb;
   color: #fff;
   border-radius: 50%;
-  padding: 10px 14px;
+  height: 50px;
+  width: 50px;
+    padding: 20px 10px;
 }
 
 /* COMMON UI */

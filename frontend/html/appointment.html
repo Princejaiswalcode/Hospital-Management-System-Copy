@@ -6,6 +6,8 @@
 
   <link rel="stylesheet" href="/frontend/css/base.css" />
   <link rel="stylesheet" href="/frontend/css/appointment.css" />
+
+  <!-- SweetAlert -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -17,20 +19,14 @@
     <h2 class="logo">Hospital System</h2>
 
     <nav id="sidebarNav">
-    <a data-page="dashboard" class="nav-link active">Dashboard</a>
-
-    <a data-page="patients" data-role="admin,reception,nurse">Patients</a>
-    <a data-page="appointments" data-role="admin,reception,doctor">Appointments</a>
-    <a data-page="treatments" data-role="admin,doctor,nurse">Treatments</a>
-    <a data-page="wards" data-role="admin,nurse">Wards & Admission</a>
-    <a data-page="billing" data-role="admin,accounts">Billing</a>
-    <a data-page="salary" data-role="admin,accounts">Salary Payments</a>
-
-    <a data-page="profile" data-role="patient,reception">My Profile</a>
-    <a data-page="myAppointments" data-role="patient,doctor">My Appointments</a>
-    <a data-page="myBills" data-role="patient">My Bills</a>
-  </nav>
-
+      <a data-page="dashboard">Dashboard</a>
+      <a data-page="patients" data-role="admin,reception,nurse">Patients</a>
+      <a data-page="appointments" data-role="admin,reception,doctor" class="active">Appointments</a>
+      <a data-page="treatments" data-role="admin,doctor,nurse">Treatments</a>
+      <a data-page="wards" data-role="admin,nurse">Wards & Admission</a>
+      <a data-page="billing" data-role="admin,accounts">Billing</a>
+      <a data-page="salary" data-role="admin,accounts">Salary Payments</a>
+    </nav>
 
     <button class="logout">Logout</button>
   </aside>
@@ -54,54 +50,60 @@
     <!-- PAGE TITLE -->
     <div class="page-title">
       <h2>Appointment Management</h2>
-      <button class="primary-btn" id="toggleForm">+ New Appointment</button>
+      <button class="primary-btn" id="btnShowForm">+ New Appointment</button>
     </div>
 
-    <!-- ADD FORM -->
-    <div class="card form-card hidden" id="appointmentForm">
+    <!-- ADD APPOINTMENT FORM -->
+    <div class="card" id="appointmentFormCard" style="display:none;">
       <h3>Schedule New Appointment</h3>
 
-      <div class="form-grid">
+      <form id="appointmentForm" class="form-grid">
+
         <div>
           <label>Patient</label>
-          <select id="patientSelect">
-            <option>Select Patient</option>
+          <select id="patientSelect" required>
+            <option value="">Select Patient</option>
           </select>
         </div>
 
         <div>
           <label>Doctor</label>
-          <select id="doctorSelect">
-            <option>Select Doctor</option>
+          <select id="doctorSelect" required>
+            <option value="">Select Doctor</option>
           </select>
         </div>
 
         <div>
           <label>Date</label>
-          <input type="date" id="appointmentDate" />
+          <input type="date" id="appointmentDate" required />
         </div>
 
         <div>
           <label>Time</label>
-          <input type="time" id="appointmentTime" />
-        </div>
-
-        <div>
-          <label>Appointment Type</label>
-          <select id="appointmentType">
-            <option>Consultation</option>
-            <option>Follow-up</option>
+          <select id="appointmentTime" required>
+            <option value="">Select Time</option>
           </select>
         </div>
-      </div>
 
-      <div class="form-actions">
-        <button class="primary-btn" id="createAppointment">Create Appointment</button>
-        <button class="secondary-btn" id="cancelForm">Cancel</button>
-      </div>
+        <div style="grid-column: span 2;">
+          <label>Reason</label>
+          <input type="text" id="appointmentReason" placeholder="Eg: Consultation, Fever" required />
+        </div>
+
+        <div style="grid-column: span 2;">
+          <label>Notes (optional)</label>
+          <input type="text" id="appointmentNotes" placeholder="Additional notes (optional)" />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Create Appointment</button>
+          <button type="button" class="secondary-btn" id="btnCancelForm">Cancel</button>
+        </div>
+
+      </form>
     </div>
 
-    <!-- TABLE -->
+    <!-- APPOINTMENTS TABLE -->
     <div class="card">
       <table class="table">
         <thead>
@@ -111,7 +113,7 @@
             <th>DOCTOR</th>
             <th>DATE</th>
             <th>TIME</th>
-            <th>TYPE</th>
+            <th>REASON</th>
             <th>STATUS</th>
           </tr>
         </thead>
@@ -124,8 +126,12 @@
   </main>
 </div>
 
+<!-- GLOBAL JS -->
 <script src="/frontend/js/toast.js"></script>
 <script src="/frontend/js/layout.js"></script>
+
+<!-- PAGE JS -->
 <script src="/frontend/js/appointment.js"></script>
+
 </body>
 </html>

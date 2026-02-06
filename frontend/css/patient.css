@@ -1,6 +1,6 @@
 /* ===============================
-   PATIENT MANAGEMENT PAGE
-   =============================== */
+   PATIENT MANAGEMENT – FIGMA STYLE
+=============================== */
 
 .page-title {
   display: flex;
@@ -15,119 +15,80 @@
   color: #0f172a;
 }
 
-/* ADD PATIENT BUTTON */
-.add-btn {
-  background: #2563eb;
-  color: #ffffff;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.add-btn:hover {
-  background: #1e40af;
-}
-
 /* ===============================
-   CARD CONTAINER
-   =============================== */
-
+   CARD
+=============================== */
 .card {
   background: #ffffff;
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
 }
 
 /* ===============================
-   SEARCH BAR
-   =============================== */
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+   SEARCH BAR (MATCH APPOINTMENTS)
+=============================== */
+.search {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 10px 14px;
+  font-size: 14px;
   margin-bottom: 16px;
 }
 
-.search-box input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 14px;
-  color: #0f172a;
-}
-
-.search-box input::placeholder {
+.search::placeholder {
   color: #94a3b8;
 }
 
 /* ===============================
-   TABLE
-   =============================== */
-
+   TABLE (SAME AS APPOINTMENTS)
+=============================== */
 .table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.table thead {
-  background: #f8fafc;
-}
-
-.table th {
+.table thead th {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
   color: #64748b;
-  padding: 14px 12px;
-  text-transform: uppercase;
+  padding: 16px 20px;
+  background: #f8fafc;
 }
 
-.table td {
-  padding: 16px 12px;
+.table tbody td {
+  padding: 18px 20px;
   font-size: 14px;
   color: #0f172a;
-  border-bottom: 1px solid #e5e7eb;
-  vertical-align: middle;
+  border-top: 1px solid #f1f5f9;
 }
 
-.table tr:last-child td {
-  border-bottom: none;
+.table tbody tr:hover {
+  background: #f9fafb;
 }
 
 /* PATIENT ID */
-.table .pid {
+.table tbody td:first-child {
   color: #2563eb;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* PATIENT NAME */
-.table .pname {
+.table tbody td:nth-child(2) strong {
   font-weight: 600;
 }
 
 /* ===============================
-   STATUS BADGES
-   =============================== */
-
+   STATUS BADGES (CONSISTENT)
+=============================== */
 .badge {
-  display: inline-block;
-  padding: 6px 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
   font-size: 12px;
   font-weight: 500;
-  border-radius: 999px;
-  text-align: center;
-  white-space: nowrap;
+  display: inline-block;
 }
 
 /* Admitted */
@@ -147,10 +108,10 @@
   background: #dcfce7;
   color: #166534;
 }
-/* =========================
-   PATIENT FORM LAYOUT
-========================= */
 
+/* ===============================
+   PATIENT FORM (CLEAN LIKE APPT)
+=============================== */
 .patient-form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -166,21 +127,6 @@
   grid-column: span 2;
 }
 
-.patient-form .field.small input,
-.patient-form .field.small select {
-  height: 38px;
-  font-size: 14px;
-}
-
-.patient-form input,
-.patient-form select {
-  height: 42px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid #cfd8e3;
-  font-size: 14px;
-}
-
 .patient-form label {
   font-size: 13px;
   font-weight: 600;
@@ -188,30 +134,40 @@
   color: #374151;
 }
 
+.patient-form input,
+.patient-form select {
+  height: 42px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.patient-form input:focus,
+.patient-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
 .patient-form .actions {
   grid-column: span 2;
   display: flex;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 /* ===============================
-   RESPONSIVE (OPTIONAL)
-   =============================== */
-
+   RESPONSIVE
+=============================== */
 @media (max-width: 900px) {
-  .table th,
-  .table td {
+  .table thead th,
+  .table tbody td {
+    padding: 14px 12px;
     font-size: 13px;
-    padding: 12px 8px;
   }
 
   .page-title h2 {
     font-size: 18px;
-  }
-
-  .add-btn {
-    padding: 8px 14px;
-    font-size: 13px;
   }
 }
