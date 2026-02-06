@@ -16,7 +16,7 @@ import {
 ========================= */
 export const fetchAllPatients = asyncHandler(async (req, res) => {
   const patients = await getAllPatients();
-  res.status(200).json(new ApiResponse(200, patients));
+  res.status(200).json(patients);
 });
 
 /* =========================
@@ -29,7 +29,7 @@ export const fetchPatientById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Patient not found");
   }
 
-  res.status(200).json(new ApiResponse(200, patient));
+  res.status(200).json(patient);
 });
 
 /* =========================
@@ -42,18 +42,60 @@ export const fetchMyPatientProfile = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Patient profile not found");
   }
 
-  res.status(200).json(new ApiResponse(200, patient));
+  res.status(200).json(patient);
 });
 
 /* =========================
    CREATE PATIENT
 ========================= */
 export const addPatient = asyncHandler(async (req, res) => {
-  const patientId = await createPatient(req.body);
+  const {
+    first_name,
+    last_name,
+    gender,
+    date_of_birth,
+    phone,
+    email,
+    address,
+    blood_group,
+    emergency_contact,
+    status
+  } = req.body;
+
+  // required fields
+  if (
+    !first_name ||
+    !gender ||
+    !date_of_birth ||
+    !phone ||
+    !status
+  ) {
+    throw new ApiError(400, "Missing required fields");
+  }
+
+  const patientId = await createPatient({
+    user_id: null, // admin-created patient
+    first_name,
+    last_name: last_name || null,
+    gender,
+    date_of_birth,
+    phone,
+    email: email || null,
+    address,
+    blood_group: blood_group || null,
+    emergency_contact: emergency_contact || null,
+    status
+  });
 
   res
     .status(201)
-    .json(new ApiResponse(201, { patient_id: patientId }, "Patient created"));
+    .json(
+      new ApiResponse(
+        201,
+        { patient_id: patientId },
+        "Patient created successfully"
+      )
+    );
 });
 
 /* =========================

@@ -1,41 +1,54 @@
-document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form");
 
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  // 🔒 Only run on login page
+  if (!form) return;
 
-  if (!username || !password) {
-    showToast("error", "Username and password required");
-    return;
-  }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username, password })
-    });
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      showToast("error", data.message || "Invalid credentials");
+    if (!usernameInput || !passwordInput) {
+      showToast("error", "Login form is broken");
       return;
     }
 
-    // Save token & user
-    sessionStorage.setItem("token", data.data.token);
-    sessionStorage.setItem("user", JSON.stringify(data.data.user));
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    showToast("success", "Login successful");
+    if (!username || !password) {
+      showToast("error", "Username and password required");
+      return;
+    }
 
-    setTimeout(() => {
-      window.location.href = "/frontend/html/dashboard.html";
-    }, 800);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
 
-  } catch (err) {
-    showToast("error", "Server error");
-  }
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast("error", data.message || "Invalid credentials");
+        return;
+      }
+
+      // ✅ Save auth data
+      sessionStorage.setItem("token", data.data.token);
+      sessionStorage.setItem("user", JSON.stringify(data.data.user));
+
+      showToast("success", "Login successful");
+
+      setTimeout(() => {
+        window.location.href = "/frontend/html/dashboard.html";
+      }, 600);
+
+    } catch (err) {
+      showToast("error", "Server error");
+    }
+  });
 });

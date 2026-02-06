@@ -1,33 +1,39 @@
 document.addEventListener("DOMContentLoaded", () => {
-  requireAuth();
-  loadUserInfo();
-  setupFormToggle();
-  loadPatients();
-  setupSearch();
-});
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
-/* USER INFO */
-function loadUserInfo() {
-  const user = sessionStorage.getItem("user");
   if (!user) {
+    sessionStorage.clear();
     window.location.href = "/frontend/html/login.html";
     return;
   }
 
-  const data = JSON.parse(user);
-  userName.innerText = data.full_name;
-  headerUserName.innerText = data.full_name;
-  userRole.innerText = data.role + " Dashboard";
-  userAvatar.innerText = data.full_name.charAt(0).toUpperCase();
+  loadUserInfo();
+  bindUI();
+  loadPatients();
+  setupSearch();
+});
+
+/* =========================
+   USER INFO
+========================= */
+function loadUserInfo() {
+  const data = JSON.parse(sessionStorage.getItem("user"));
+
+  document.getElementById("userName").innerText = data.full_name;
+  document.getElementById("headerUserName").innerText = data.full_name;
+  document.getElementById("userRole").innerText = `${data.role} Dashboard`;
+  document.getElementById("userAvatar").innerText =
+    data.full_name.charAt(0).toUpperCase();
 }
 
 /* =========================
-   FORM TOGGLE
+   UI BINDINGS
 ========================= */
-function setupFormToggle() {
+function bindUI() {
   const btnShow = document.getElementById("btnShowForm");
   const btnCancel = document.getElementById("btnCancelForm");
   const formCard = document.getElementById("patientFormCard");
+  const form = document.getElementById("patientForm");
 
   btnShow.addEventListener("click", () => {
     formCard.style.display = "block";
@@ -37,22 +43,28 @@ function setupFormToggle() {
   btnCancel.addEventListener("click", () => {
     formCard.style.display = "none";
     btnShow.style.display = "inline-block";
-    document.getElementById("patientForm").reset();
+    form.reset();
   });
 
-  document
-    .getElementById("patientForm")
-    .addEventListener("submit", submitPatient);
+  form.addEventListener("submit", submitPatient);
 }
 
 /* =========================
    LOAD PATIENTS
 ========================= */
 function loadPatients() {
-  fetch("http://localhost:5000/api/patients")
+  const token = sessionStorage.getItem("token");
+
+  fetch("http://localhost:5000/api/patients", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .then(res => res.json())
-    .then(data => renderPatients(data))
-    .catch(() => showToast("error", "Failed to load patients"));
+    .then(renderPatients)
+    .catch(() =>
+      showToast("error", "Failed to load patients")
+    );
 }
 
 function renderPatients(patients) {
@@ -64,10 +76,10 @@ function renderPatients(patients) {
 
     tr.innerHTML = `
       <td>#${p.patient_id}</td>
-      <td><strong>${p.name}</strong></td>
-      <td>${p.age} / ${p.gender}</td>
-      <td>${p.contact}</td>
-      <td>${p.address}</td>
+      <td><strong>${p.first_name} ${p.last_name ?? ""}</strong></td>
+      <td>${p.age ?? "-"} / ${p.gender}</td>
+      <td>${p.phone ?? "-"}</td>
+      <td>${p.address ?? "-"}</td>
       <td>
         <span class="badge ${p.status.toLowerCase()}">
           ${p.status}
@@ -80,23 +92,46 @@ function renderPatients(patients) {
 }
 
 /* =========================
+   ADD PATIENT (FIXED)
+========================= */
+/* =========================
    ADD PATIENT
 ========================= */
 function submitPatient(e) {
   e.preventDefault();
 
   const payload = {
-    name: document.getElementById("name").value.trim(),
+    first_name: document.getElementById("first_name").value.trim(),
+    last_name: document.getElementById("last_name").value.trim() || null,
     gender: document.getElementById("gender").value,
-    age: document.getElementById("age").value,
-    contact: document.getElementById("contact").value.trim(),
+    date_of_birth: document.getElementById("date_of_birth").value,
+    phone: document.getElementById("phone").value.trim(),
+    email: document.getElementById("email").value.trim() || null,
     address: document.getElementById("address").value.trim(),
+    blood_group: document.getElementById("blood_group").value || null,
+    emergency_contact:
+      document.getElementById("emergency_contact").value.trim() || null,
     status: document.getElementById("status").value
   };
 
+  // Required validation
+  if (
+    !payload.first_name ||
+    !payload.gender ||
+    !payload.date_of_birth ||
+    !payload.phone ||
+    !payload.status
+  ) {
+    showToast("error", "Please fill all required fields");
+    return;
+  }
+
   fetch("http://localhost:5000/api/patients", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`
+    },
     body: JSON.stringify(payload)
   })
     .then(res => {
@@ -104,7 +139,7 @@ function submitPatient(e) {
       return res.json();
     })
     .then(() => {
-      showToast("success", "Patient registered successfully");
+      showToast("success", "Patient added successfully");
       document.getElementById("patientForm").reset();
       document.getElementById("patientFormCard").style.display = "none";
       document.getElementById("btnShowForm").style.display = "inline-block";
@@ -112,6 +147,7 @@ function submitPatient(e) {
     })
     .catch(() => showToast("error", "Failed to add patient"));
 }
+
 
 /* =========================
    SEARCH
@@ -121,9 +157,7 @@ function setupSearch() {
 
   input.addEventListener("keyup", () => {
     const value = input.value.toLowerCase();
-    const rows = document.querySelectorAll("#patientsTable tr");
-
-    rows.forEach(row => {
+    document.querySelectorAll("#patientsTable tr").forEach(row => {
       row.style.display = row.innerText.toLowerCase().includes(value)
         ? ""
         : "none";

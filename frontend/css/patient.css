@@ -147,6 +147,53 @@
   background: #dcfce7;
   color: #166534;
 }
+/* =========================
+   PATIENT FORM LAYOUT
+========================= */
+
+.patient-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 18px;
+}
+
+.patient-form .field {
+  display: flex;
+  flex-direction: column;
+}
+
+.patient-form .field.full {
+  grid-column: span 2;
+}
+
+.patient-form .field.small input,
+.patient-form .field.small select {
+  height: 38px;
+  font-size: 14px;
+}
+
+.patient-form input,
+.patient-form select {
+  height: 42px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cfd8e3;
+  font-size: 14px;
+}
+
+.patient-form label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+.patient-form .actions {
+  grid-column: span 2;
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
 
 /* ===============================
    RESPONSIVE (OPTIONAL)
