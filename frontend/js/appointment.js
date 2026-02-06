@@ -15,11 +15,10 @@ function loadUserInfo() {
   }
 
   const data = JSON.parse(user);
-
-  userName.innerText = data.name;
-  headerUserName.innerText = data.name;
+  userName.innerText = data.full_name;
+  headerUserName.innerText = data.full_name;
   userRole.innerText = data.role + " Dashboard";
-  userAvatar.innerText = data.name.charAt(0).toUpperCase();
+  userAvatar.innerText = data.full_name.charAt(0).toUpperCase();
 }
 
 /* ROLE-BASED UI CONTROL */

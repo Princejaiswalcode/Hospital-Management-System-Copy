@@ -6,22 +6,19 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSearch();
 });
 
-/* =========================
-   USER INFO
-========================= */
+/* USER INFO */
 function loadUserInfo() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
-
-  document.getElementById("userName").innerText = user.name;
-  document.getElementById("headerUserName").innerText = user.name;
-  document.getElementById("userRole").innerText = `${user.role} Dashboard`;
-  document.getElementById("userAvatar").innerText =
-    user.name.charAt(0).toUpperCase();
-
-  // ROLE-BASED UI (future-proof)
-  if (user.role === "Nurse" || user.role === "Doctor") {
-    document.getElementById("btnShowForm").style.display = "none";
+  const user = sessionStorage.getItem("user");
+  if (!user) {
+    window.location.href = "/frontend/html/login.html";
+    return;
   }
+
+  const data = JSON.parse(user);
+  userName.innerText = data.full_name;
+  headerUserName.innerText = data.full_name;
+  userRole.innerText = data.role + " Dashboard";
+  userAvatar.innerText = data.full_name.charAt(0).toUpperCase();
 }
 
 /* =========================

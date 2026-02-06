@@ -39,7 +39,7 @@ function setupNavRouting() {
     patients: "patient.html",
     appointments: "appointment.html",
     treatments: "treatment.html",
-    wards: "wards.html",
+    wards: "ward.html",
     billing: "billing.html",
     salary: "salary.html",
     profile: "profile.html",

@@ -9,18 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* USER INFO */
 function loadUserInfo() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = sessionStorage.getItem("user");
   if (!user) {
     window.location.href = "/frontend/html/login.html";
     return;
   }
 
-  userName.innerText = user.name;
-  headerUserName.innerText = user.name;
-  userRole.innerText = user.role + " Dashboard";
-  userAvatar.innerText = user.name.charAt(0).toUpperCase();
+  const data = JSON.parse(user);
+  userName.innerText = data.full_name;
+  headerUserName.innerText = data.full_name;
+  userRole.innerText = data.role + " Dashboard";
+  userAvatar.innerText = data.full_name.charAt(0).toUpperCase();
 }
-
 /* ROLE BASED ACCESS */
 function applyRoleAccess() {
   const user = JSON.parse(sessionStorage.getItem("user"));

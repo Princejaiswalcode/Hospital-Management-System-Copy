@@ -17,19 +17,19 @@ function checkRoleAccess() {
     window.location.href = "/frontend/html/dashboard.html";
   }
 }
-
-/* =========================
-   USER INFO
-========================= */
+/* USER INFO */
 function loadUserInfo() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = sessionStorage.getItem("user");
+  if (!user) {
+    window.location.href = "/frontend/html/login.html";
+    return;
+  }
 
-  document.getElementById("userName").innerText = user.full_name;
-  document.getElementById("headerUserName").innerText = user.full_name;
-  document.getElementById("userRole").innerText =
-    `${user.role.toUpperCase()} Dashboard`;
-  document.getElementById("userAvatar").innerText =
-    user.full_name.charAt(0).toUpperCase();
+  const data = JSON.parse(user);
+  userName.innerText = data.full_name;
+  headerUserName.innerText = data.full_name;
+  userRole.innerText = data.role + " Dashboard";
+  userAvatar.innerText = data.full_name.charAt(0).toUpperCase();
 }
 
 /* =========================
